@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The housing squeeze — IrlStats</title>
+  <meta name="description" content="Irish house prices have cleared their Celtic Tiger peak even as home-building has quadrupled. A look at the numbers behind the housing crisis." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b6e4f'/%3E%3Ctext x='50' y='72' font-size='62' font-family='system-ui' font-weight='800' fill='white' text-anchor='middle'%3EI%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <header class="mast">
+    <div class="wrap mast__row">
+      <a class="brand" href="../index.html">
+        <span><span class="brand__irl">Irl</span><span class="brand__stats">Stats</span></span>
+        <span class="brand__tag">Ireland by the numbers</span>
+      </a>
+      <nav>
+        <a class="nav-hide" href="../index.html#housing">Housing</a>
+        <a class="nav-hide" href="../index.html#economy">Economy</a>
+        <a class="nav-hide" href="../index.html#society">Society</a>
+        <a class="nav-hide" href="../about.html">About</a>
+        <button class="theme-btn" id="themeBtn" title="Toggle light / dark" aria-label="Toggle theme">◐</button>
+      </nav>
+    </div>
+  </header>
+
+  <article class="article">
+    <span class="eyebrow">Housing</span>
+    <h1>House prices have never been higher — and are still climbing</h1>
+    <p class="article__standfirst">The residential property price index has more than doubled from its 2013 crash trough and has now cleared the 2007 Celtic Tiger peak. Building more homes has not, so far, been enough to reverse it.</p>
+    <div class="article__meta">Analysis · Data: CSO, Department of Housing · Updated 2025</div>
+
+    <p>For anyone trying to buy a home in Ireland, the last decade has felt like running up a down escalator. After the 2008 crash, residential property lost more than half its value — the national index fell 54% from its 2007 peak to the 2013 floor. Then it turned, and it has barely paused since.</p>
+
+    <p>By early 2025 the CSO's Residential Property Price Index had not just recovered the ground lost in the crash; it had gone past the Celtic Tiger high entirely. Dublin, which fell hardest, led the rebound.</p>
+
+    <div class="figure">
+      <div class="figure__title">Property prices have passed their 2007 peak</div>
+      <div class="figure__sub">Residential Property Price Index, January 2005 = 100.</div>
+      <div id="chart-houseprices"></div>
+      <div class="chart-source" id="src-houseprices"></div>
+    </div>
+
+    <p class="pull">The index fell 54% after the crash. It has now risen roughly 180% from the floor.</p>
+
+    <h2>Building has recovered — but from almost nothing</h2>
+
+    <p>The intuitive fix is supply: build more homes and prices should ease. Completions have indeed recovered dramatically, quadrupling from barely 7,000 in 2015. But they are still short of the roughly 33,000 homes a year that most estimates say the country needs simply to keep pace with population growth and household formation — and well short of the higher targets now being discussed.</p>
+
+    <div class="figure">
+      <div class="figure__title">New homes completed each year</div>
+      <div class="figure__sub">Against an estimated annual need of around 33,000.</div>
+      <div id="chart-completions"></div>
+      <div class="chart-source" id="src-completions"></div>
+    </div>
+
+    <p>The gap between what is built and what is needed compounds. Each year of undersupply adds to a backlog, keeping upward pressure on both prices and rents even as construction ramps up. Add record inward migration — more on that <a href="population.html">here</a> — and demand has run ahead of a building industry still rebuilding its own capacity after the crash wiped it out.</p>
+
+    <h2>Why this matters</h2>
+
+    <p>Housing costs now sit at the centre of Irish economic and political life: affordability, homelessness, the ability of employers to attract workers, and where a generation can afford to live. The numbers show a market that has recovered its value but not its balance.</p>
+
+    <a class="back-link" href="../index.html">← Back to all data</a>
+  </article>
+
+  <footer class="foot">
+    <div class="wrap foot__grid">
+      <div>
+        <div class="foot__brand"><span>Irl</span>Stats</div>
+        <p class="foot__note">An independent data-journalism project about Ireland. Every chart links back to its official source.</p>
+      </div>
+      <div>
+        <h4>More</h4>
+        <a href="population.html">5.38 million</a>
+        <a href="economy.html">Ireland's two economies</a>
+        <a href="../about.html">Methodology</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/charts.js"></script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var saved = localStorage.getItem("irlstats-theme");
+      if (saved) root.setAttribute("data-theme", saved);
+      var btn = document.getElementById("themeBtn");
+      btn && btn.addEventListener("click", function () {
+        var isDark = root.getAttribute("data-theme") === "dark" ||
+          (!root.hasAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+        var next = isDark ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        localStorage.setItem("irlstats-theme", next);
+      });
+      function draw(key, type, stacked) {
+        var ds = IRL[key], host = document.getElementById("chart-" + key);
+        if (!ds || !host) return;
+        IrlChart.render(host, {
+          xLabels: ds.xLabels, series: ds.series, yFormat: ds.yFormat,
+          zeroLine: ds.zeroLine, target: ds.target, annotations: ds.annotations,
+          type: type, stacked: stacked,
+        });
+        var src = document.getElementById("src-" + key);
+        if (src) src.innerHTML = "<strong>Source:</strong> " + ds.source + " · Updated " + ds.updated;
+      }
+      draw("houseprices", "line");
+      draw("completions", "column");
+    })();
+  </script>
+</body>
+</html>

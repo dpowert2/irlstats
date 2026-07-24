@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About &amp; methodology — IrlStats</title>
+  <meta name="description" content="How IrlStats is built, where the data comes from, and the principles behind it." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b6e4f'/%3E%3Ctext x='50' y='72' font-size='62' font-family='system-ui' font-weight='800' fill='white' text-anchor='middle'%3EI%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="mast">
+    <div class="wrap mast__row">
+      <a class="brand" href="index.html">
+        <span><span class="brand__irl">Irl</span><span class="brand__stats">Stats</span></span>
+        <span class="brand__tag">Ireland by the numbers</span>
+      </a>
+      <nav>
+        <a class="nav-hide" href="index.html#housing">Housing</a>
+        <a class="nav-hide" href="index.html#economy">Economy</a>
+        <a class="nav-hide" href="index.html#society">Society</a>
+        <a class="nav-hide" href="about.html">About</a>
+        <button class="theme-btn" id="themeBtn" title="Toggle light / dark" aria-label="Toggle theme">◐</button>
+      </nav>
+    </div>
+  </header>
+
+  <article class="article">
+    <span class="eyebrow">About</span>
+    <h1>About IrlStats</h1>
+    <p class="article__standfirst">IrlStats is an independent data-journalism project that explains Ireland through its official statistics — the numbers behind housing, the economy, population, health and climate, presented as clearly as we can manage.</p>
+
+    <p>It is modelled on the data sections that news organisations increasingly run: a single place where the important national numbers live, kept in context and connected to the stories they tell. Every chart on this site is interactive, works in light and dark mode, and ships a plain data table so the underlying figures are always one click away.</p>
+
+    <h2>Where the data comes from</h2>
+    <p>Nothing here is invented. Each figure is drawn from a named official source and rounded for presentation. The main sources are:</p>
+    <ul style="font-size:18px;line-height:1.6;color:var(--ink);padding-left:20px">
+      <li><strong>Central Statistics Office (CSO)</strong> — population and migration estimates, the Census, the Residential Property Price Index, consumer prices, national accounts (GDP and modified GNI*), new-dwelling completions and the Labour Force Survey.</li>
+      <li><strong>Eurostat</strong> — harmonised inflation (HICP) and EU comparisons.</li>
+      <li><strong>Environmental Protection Agency (EPA)</strong> — the national greenhouse-gas inventory.</li>
+      <li><strong>National Treatment Purchase Fund (NTPF)</strong> — hospital waiting lists.</li>
+      <li><strong>Department of Finance &amp; the Revenue Commissioners</strong> — exchequer returns and corporation-tax receipts.</li>
+    </ul>
+
+    <h2>How to read the numbers</h2>
+    <p>Where a headline figure is a provisional release or an estimate rather than a final count, it is flagged in the accompanying text. Index charts are rebased to a stated starting point (for house prices, January 2005 = 100). Currency figures are in euro at current prices unless stated otherwise, and are not inflation-adjusted. Some series are rounded to the nearest thousand or to one decimal place, so small year-to-year movements should be read as indicative.</p>
+
+    <p>The most important number on the page is often not the biggest one. Ireland's GDP, for instance, is genuinely enormous and genuinely misleading — which is exactly why we show modified GNI* beside it. The aim throughout is to give the honest picture, not the flattering one.</p>
+
+    <h2>How it's built</h2>
+    <p>The site is a small, dependency-free static project: hand-written HTML and CSS, a compact SVG charting engine, and a single data file where every series carries its own source and last-updated date. There are no trackers and no external requests — it will load and run entirely offline.</p>
+
+    <p class="pull">Public statistics are a public good. This is an attempt to make Ireland's a little easier to see.</p>
+
+    <p style="color:var(--ink-2);font-size:15px">IrlStats is an independent demonstration project and is not affiliated with The Times, the CSO, or any government body. Figures are compiled in good faith from public sources; for authoritative data always consult the original releases, which are linked from each section.</p>
+
+    <a class="back-link" href="index.html">← Back to all data</a>
+  </article>
+
+  <footer class="foot">
+    <div class="wrap foot__grid">
+      <div>
+        <div class="foot__brand"><span>Irl</span>Stats</div>
+        <p class="foot__note">An independent data-journalism project about Ireland. Every chart links back to its official source.</p>
+      </div>
+      <div>
+        <h4>Deep dives</h4>
+        <a href="stories/housing.html">The housing squeeze</a>
+        <a href="stories/population.html">5.38 million</a>
+        <a href="stories/economy.html">Ireland's two economies</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var saved = localStorage.getItem("irlstats-theme");
+      if (saved) root.setAttribute("data-theme", saved);
+      var btn = document.getElementById("themeBtn");
+      btn && btn.addEventListener("click", function () {
+        var isDark = root.getAttribute("data-theme") === "dark" ||
+          (!root.hasAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+        var next = isDark ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        localStorage.setItem("irlstats-theme", next);
+      });
+    })();
+  </script>
+</body>
+</html>

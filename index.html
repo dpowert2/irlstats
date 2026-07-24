@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IrlStats — Ireland by the numbers</title>
+  <meta name="description" content="Ireland, explained through data. Interactive charts on housing, the economy, population, migration, health and climate — built on official CSO, Eurostat and EPA figures." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b6e4f'/%3E%3Ctext x='50' y='72' font-size='62' font-family='system-ui' font-weight='800' fill='white' text-anchor='middle'%3EI%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="mast">
+    <div class="wrap mast__row">
+      <a class="brand" href="index.html">
+        <span><span class="brand__irl">Irl</span><span class="brand__stats">Stats</span></span>
+        <span class="brand__tag">Ireland by the numbers</span>
+      </a>
+      <nav>
+        <a class="nav-hide" href="#housing">Housing</a>
+        <a class="nav-hide" href="#economy">Economy</a>
+        <a class="nav-hide" href="#society">Society</a>
+        <a class="nav-hide" href="#climate">Climate</a>
+        <a class="nav-hide" href="about.html">About</a>
+        <button class="theme-btn" id="themeBtn" title="Toggle light / dark" aria-label="Toggle light and dark theme">◐</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="page-head">
+      <span class="eyebrow">Data</span>
+      <h1>Ireland, explained through data.</h1>
+      <p>Interactive charts and analysis on the numbers shaping the country — housing, the economy, population, migration, health and climate. Built on official figures from the CSO, Eurostat, the EPA and the Department of Finance.</p>
+    </section>
+
+    <!-- Live headline stats -->
+    <section class="ticker" aria-label="Ireland right now">
+      <div class="ticker__grid" id="ticker"></div>
+    </section>
+
+    <!-- Story grid -->
+    <section class="story-grid" id="storyGrid"></section>
+
+    <!-- Deep dive: economy -->
+    <section class="band" id="economy">
+      <div class="band__head">
+        <span class="eyebrow">The two economies</span>
+        <h2>The gap between Ireland's GDP and the real economy keeps widening</h2>
+        <p>A handful of multinationals book vast profits through Ireland, inflating GDP far beyond what the domestic economy actually produces. The CSO built a bespoke measure — modified GNI* — to strip that distortion out. The distance between the two lines is, in effect, the multinational sector.</p>
+      </div>
+      <div class="figure">
+        <div class="figure__title">GDP vs modified GNI*</div>
+        <div class="figure__sub">€ billion, current prices. GNI* removes the distorting effects of globalisation.</div>
+        <div id="chart-economy"></div>
+        <div class="chart-source" id="src-economy"></div>
+      </div>
+    </section>
+
+    <!-- Deep dive: society two-up -->
+    <section class="band" id="society">
+      <div class="band__head">
+        <span class="eyebrow">Society</span>
+        <h2>A growing, changing population</h2>
+        <p>Ireland is the fastest-growing country in the EU, and for the first time in modern history that growth is driven by migration rather than natural increase.</p>
+      </div>
+      <div class="two-col">
+        <div class="figure">
+          <div class="figure__title">Population since 1841</div>
+          <div class="figure__sub">The Famine and a century of emigration still shape the total.</div>
+          <div id="chart-population"></div>
+          <div class="chart-source" id="src-population"></div>
+        </div>
+        <div class="figure">
+          <div class="figure__title">Migration flows</div>
+          <div class="figure__sub">Gross arrivals and departures, with the net balance.</div>
+          <div id="chart-migration"></div>
+          <div class="chart-source" id="src-migration"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep dive: housing -->
+    <section class="band" id="housing">
+      <div class="band__head">
+        <span class="eyebrow">Housing</span>
+        <h2>Prices at record highs, supply still short of need</h2>
+        <p>The residential property price index has cleared its 2007 peak, even as completions have quadrupled from their post-crash low. Building more has not, so far, brought prices down.</p>
+      </div>
+      <div class="two-col">
+        <div class="figure">
+          <div class="figure__title">Property price index</div>
+          <div class="figure__sub">January 2005 = 100. National and Dublin.</div>
+          <div id="chart-houseprices"></div>
+          <div class="chart-source" id="src-houseprices"></div>
+        </div>
+        <div class="figure">
+          <div class="figure__title">New homes completed</div>
+          <div class="figure__sub">Against an estimated annual need of ~33,000.</div>
+          <div id="chart-completions"></div>
+          <div class="chart-source" id="src-completions"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep dive: cost of living + climate -->
+    <section class="band" id="climate">
+      <div class="band__head">
+        <span class="eyebrow">Prices &amp; climate</span>
+        <h2>The spike that faded, and the target that isn't moving</h2>
+        <p>Inflation has returned close to target — but Ireland remains far off the legally binding path to cut emissions 51% by 2030.</p>
+      </div>
+      <div class="two-col">
+        <div class="figure">
+          <div class="figure__title">Annual inflation (HICP)</div>
+          <div class="figure__sub">The cost-of-living spike peaked at 8.1% in 2022.</div>
+          <div id="chart-inflation"></div>
+          <div class="chart-source" id="src-inflation"></div>
+        </div>
+        <div class="figure">
+          <div class="figure__title">Greenhouse gas emissions</div>
+          <div class="figure__sub">Mt CO₂-eq, against the 2030 legal ceiling.</div>
+          <div id="chart-emissions"></div>
+          <div class="chart-source" id="src-emissions"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Health -->
+    <section class="band">
+      <div class="band__head">
+        <span class="eyebrow">Health</span>
+        <h2>Hospital waiting lists are easing — slowly</h2>
+        <p>The number of people waiting for a first outpatient appointment peaked above 630,000 and is now falling, but remains far above pre-pandemic levels.</p>
+      </div>
+      <div class="figure">
+        <div class="figure__title">Outpatient waiting list</div>
+        <div class="figure__sub">People waiting for a first hospital outpatient appointment.</div>
+        <div id="chart-waiting"></div>
+        <div class="chart-source" id="src-waiting"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot__grid">
+      <div>
+        <div class="foot__brand"><span>Irl</span>Stats</div>
+        <p class="foot__note">An independent data-journalism project about Ireland. Every chart is built on published official statistics and links back to its source.</p>
+      </div>
+      <div>
+        <h4>Sections</h4>
+        <a href="#housing">Housing</a>
+        <a href="#economy">Economy</a>
+        <a href="#society">Society &amp; migration</a>
+        <a href="#climate">Climate</a>
+      </div>
+      <div>
+        <h4>Deep dives</h4>
+        <a href="stories/housing.html">The housing squeeze</a>
+        <a href="stories/population.html">5.38 million</a>
+        <a href="stories/economy.html">Ireland's two economies</a>
+      </div>
+      <div>
+        <h4>About</h4>
+        <a href="about.html">Methodology &amp; sources</a>
+        <a href="https://www.cso.ie" rel="noopener">CSO</a>
+        <a href="https://ec.europa.eu/eurostat" rel="noopener">Eurostat</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
