@@ -35,6 +35,12 @@
 
     <!-- The state of the nation: indicator sparkline grid -->
     <section class="ind-grid" id="indicatorGrid" aria-label="National indicators"></section>
+    <p class="provenance">
+      <span class="provenance__dot" aria-hidden="true"></span>
+      Auto-updated from official sources (CSO, Eurostat, EPA) · Last refreshed
+      <span id="lastUpdated">—</span>.
+      <a href="about.html#updates">How this stays current</a>
+    </p>
 
     <!-- In depth -->
     <div class="band__head" style="padding-bottom:0">
@@ -172,6 +178,7 @@
     </div>
   </footer>
 
+  <script src="data/live.js"></script>
   <script src="js/data.js"></script>
   <script src="js/charts.js"></script>
   <script src="js/app.js"></script>

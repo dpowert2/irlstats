@@ -1,0 +1,5 @@
+{
+  "generated": "2026-07-24",
+  "note": "Auto-updated from official sources by scripts/update-data.mjs. Series listed here override the curated defaults in js/data.js; series not listed use those curated values. This initial file ships empty — the scheduled GitHub Action populates it from the CSO API on first run.",
+  "series": {}
+}

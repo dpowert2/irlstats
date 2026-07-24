@@ -42,20 +42,67 @@ and rounded for presentation. Each dataset in `js/data.js` carries its own
 illustrative of the public releases and, where provisional, are flagged in
 the copy. See `about.html` for full methodology.
 
+## Keeping it current
+
+The page refreshes itself from official releases — it isn't a frozen snapshot:
+
+- **`scripts/update-data.mjs`** fetches the latest figures from the **CSO
+  PxStat open-data API** (JSON-stat 2.0), computes each indicator's current
+  value, change and trend, and writes **`data/live.json`** + **`data/live.js`**.
+- **`.github/workflows/update-data.yml`** runs it on a schedule (weekday
+  mornings, when CSO releases land) and commits the result if anything changed.
+- **`.github/workflows/deploy.yml`** publishes the site to **GitHub Pages** on
+  every push — including those automated data commits — so the live page tracks
+  new stats with no manual step.
+- **`js/data.js`** overlays `window.IRL_LIVE` (from `data/live.js`) on top of
+  its curated defaults: a live series wins; anything without a machine-readable
+  source falls back to the curated value. The "last refreshed" date is shown
+  under the indicator grid.
+
+The updater is **fail-safe** — a series it can't fetch keeps its previous value,
+so a bad run produces no diff rather than breaking the page.
+
+Which series map to which CSO table is declared in **`scripts/sources.mjs`**.
+To add or fix one:
+
+```sh
+# see a table's real dimensions/categories, then adjust the selector
+node scripts/update-data.mjs --inspect MUM01
+
+# dry-run against local sample files instead of the live API
+CSO_SAMPLE_DIR=scripts/samples BUILD_DATE=2025-06-04 node scripts/update-data.mjs
+```
+
+### Enabling it on your repo
+
+1. Push to `main`.
+2. In **Settings → Pages**, set *Source* to **GitHub Actions**.
+3. The deploy workflow publishes the site; the update workflow keeps it fresh.
+   Trigger the first data refresh manually from the **Actions** tab
+   (*Update data → Run workflow*) if you don't want to wait for the schedule.
+
 ## Structure
 
 ```
 index.html            # the data hub landing page
-about.html            # methodology & sources
-stories/
-  housing.html        # deep dive: house prices & supply
-  population.html     # deep dive: population & migration
-  economy.html        # deep dive: GDP vs GNI*
+about.html            # methodology, sources & how updates work
+stories/              # deep-dive articles (housing, population, economy)
 styles.css            # editorial styling + chart theming
 js/
-  data.js             # all datasets, each with its source
+  data.js             # curated datasets + live-overlay merge
   charts.js           # dependency-free SVG charting engine
-  app.js              # page wiring (ticker, story grid, charts)
+  app.js              # page wiring (indicator grid, story grid, charts)
+data/
+  live.json           # generated: canonical live snapshot
+  live.js             # generated: window.IRL_LIVE wrapper the page loads
+scripts/
+  update-data.mjs     # fetch CSO API → regenerate data/live.*
+  sources.mjs         # which series map to which CSO matrix
+  jsonstat.mjs        # JSON-stat 2.0 reader
+  samples/            # sample API responses for offline testing
+.github/workflows/
+  update-data.yml     # scheduled refresh from the CSO
+  deploy.yml          # publish to GitHub Pages
 ```
 
 ## Running

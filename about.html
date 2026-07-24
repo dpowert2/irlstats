@@ -49,6 +49,10 @@
 
     <p>One deliberate simplification: on the front-page indicator cards, the big current value and its change are the real published figures, but the mini <em>sparkline</em> behind them is a smoothed monthly path interpolated between official annual data points. It is there to convey the shape of the trend at a glance — rising, falling, spiking — not to be read off month by month. The green or red tint marks whether the most recent move is, for that indicator, a good thing or a bad one.</p>
 
+    <h2 id="updates">How this stays current</h2>
+    <p>A data page is only as good as its freshness, so IrlStats updates itself. A scheduled job runs on weekday mornings — when Irish official releases typically land — and pulls the latest figures straight from the <strong>CSO's open-data API (PxStat)</strong>, which serves official statistics in a machine-readable format. It regenerates the site's data file, and if anything has changed the page is automatically rebuilt and redeployed. The "last refreshed" date under the indicator grid shows when that last happened.</p>
+    <p>For a live indicator, the sparkline is drawn from the <em>actual</em> reported series, not an interpolation, and the headline value and change are computed directly from the newest data point. Series without a machine-readable official feed (a handful, such as the price of a pint or the ECB rate) keep curated values with a stated date, and are refreshed by hand. The process is deliberately fail-safe: if a source is unavailable on a given day, that indicator simply keeps its previous value rather than showing a gap or an error.</p>
+
     <h2>How it's built</h2>
     <p>The site is a small, dependency-free static project: hand-written HTML and CSS, a compact SVG charting engine, and a single data file where every series carries its own source and last-updated date. There are no trackers and no external requests — it will load and run entirely offline.</p>
 

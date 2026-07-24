@@ -25,6 +25,18 @@
 
   if (typeof IRL === "undefined" || typeof IrlChart === "undefined") return;
 
+  /* ---- "Last refreshed" stamp ----------------------------------- */
+  const stamp = document.getElementById("lastUpdated");
+  if (stamp && IRL.lastUpdated) stamp.textContent = formatDate(IRL.lastUpdated);
+
+  function formatDate(s) {
+    // ISO date -> "24 Jul 2026"; anything else passes through unchanged
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+    if (!m) return s;
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return Number(m[3]) + " " + months[Number(m[2]) - 1] + " " + m[1];
+  }
+
   /* ---- Indicator sparkline grid --------------------------------- */
   const indGrid = document.getElementById("indicatorGrid");
   if (indGrid && IRL.indicators) {

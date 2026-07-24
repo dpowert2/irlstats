@@ -1,0 +1,44 @@
+name: Update data
+
+# Refresh the figures from the CSO open-data API whenever new stats are
+# released. Runs on a schedule and can be triggered manually. The updater is
+# fail-safe: any series it can't fetch keeps its previous value, so a bad run
+# produces no diff rather than breaking the site.
+
+on:
+  schedule:
+    # 06:15 UTC on weekdays — CSO releases land on weekday mornings.
+    - cron: "15 6 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Regenerate data/live.js from the CSO API
+        run: BUILD_DATE="$(date -u +%Y-%m-%d)" node scripts/update-data.mjs
+
+      - name: Commit if the data changed
+        run: |
+          git config user.name  "irlstats-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if git diff --quiet -- data/; then
+            echo "No data changes."
+          else
+            git add data/live.json data/live.js
+            git commit -m "data: refresh figures from CSO ($(date -u +%Y-%m-%d))"
+            git push
+          fi
