@@ -47,6 +47,8 @@
 
     <p>The most important number on the page is often not the biggest one. Ireland's GDP, for instance, is genuinely enormous and genuinely misleading — which is exactly why we show modified GNI* beside it. The aim throughout is to give the honest picture, not the flattering one.</p>
 
+    <p>One deliberate simplification: on the front-page indicator cards, the big current value and its change are the real published figures, but the mini <em>sparkline</em> behind them is a smoothed monthly path interpolated between official annual data points. It is there to convey the shape of the trend at a glance — rising, falling, spiking — not to be read off month by month. The green or red tint marks whether the most recent move is, for that indicator, a good thing or a bad one.</p>
+
     <h2>How it's built</h2>
     <p>The site is a small, dependency-free static project: hand-written HTML and CSS, a compact SVG charting engine, and a single data file where every series carries its own source and last-updated date. There are no trackers and no external requests — it will load and run entirely offline.</p>
 

@@ -6,6 +6,13 @@ It presents the numbers shaping the country — housing, the economy,
 population, migration, health and climate — as clean, interactive charts
 built on official published statistics.
 
+**The state of the nation** — the landing page leads with a scannable grid of
+16 national-indicator cards (house prices, rents, homelessness, inflation,
+unemployment, corporation tax, emissions, migration, the price of a pint…),
+each a big current value with a coloured change and a mini area-sparkline whose
+recent slice is tinted **green when the trend is improving, red when it's
+worsening** — the signature format of a newspaper data section.
+
 **Live sections**
 
 - **Housing** — property price index (national & Dublin), new-home completions vs need

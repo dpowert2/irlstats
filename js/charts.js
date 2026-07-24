@@ -440,5 +440,86 @@
     return t;
   }
 
-  global.IrlChart = { render, lineChart, columnChart, statTile };
+  /* ---------------------------------------------------------------- */
+  /* SPARKLINE INDICATOR CARD                                         */
+  /* ---------------------------------------------------------------- */
+  function sparkCard(d) {
+    const card = html("article", "ind ind--" + (d.good === false ? "bad" : d.good === true ? "good" : "flat"));
+
+    const head = html("div", "ind__head");
+    head.appendChild(html("span", "ind__label", d.label));
+    if (d.info) {
+      const info = html("button", "ind__info");
+      info.type = "button";
+      info.setAttribute("aria-label", d.info);
+      info.title = d.info;
+      info.textContent = "ⓘ";
+      head.appendChild(info);
+    }
+    card.appendChild(head);
+
+    const row = html("div", "ind__row");
+    row.appendChild(html("span", "ind__value", d.value));
+    if (d.delta) {
+      const del = html("span", "ind__delta");
+      const arrow = d.dir === "up" ? "↑" : d.dir === "down" ? "↓" : "";
+      del.appendChild(html("span", "ind__arrow", arrow));
+      del.appendChild(html("span", null, " " + d.delta));
+      row.appendChild(del);
+    }
+    card.appendChild(row);
+
+    // ---- sparkline SVG ----
+    const sw = 320, sh = 92;
+    const pad = { t: 10, b: 6, l: 2, r: 2 };
+    const s = d.series;
+    const n = s.length;
+    let mn = Math.min(...s), mx = Math.max(...s);
+    const range = mx - mn || 1;
+    mn -= range * 0.12; mx += range * 0.12;
+    const xAt = (i) => pad.l + (i / (n - 1)) * (sw - pad.l - pad.r);
+    const yAt = (v) => sh - pad.b - ((v - mn) / (mx - mn)) * (sh - pad.t - pad.b);
+    const baseY = sh - pad.b;
+    const hi = Math.max(0, n - 12); // highlight the last 12 points (~last year)
+
+    const svg = el("svg", { viewBox: `0 0 ${sw} ${sh}`, class: "spark-svg", preserveAspectRatio: "none" });
+
+    // area fill under the whole line
+    let area = "M" + xAt(0) + " " + baseY;
+    for (let i = 0; i < n; i++) area += " L" + xAt(i) + " " + yAt(s[i]);
+    area += " L" + xAt(n - 1) + " " + baseY + " Z";
+    svg.appendChild(el("path", { d: area, class: "spark-area" }));
+
+    // highlight band behind the recent slice
+    svg.appendChild(el("rect", {
+      x: xAt(hi), y: pad.t - 6, width: sw - xAt(hi) - pad.r, height: sh - pad.t - pad.b + 8,
+      class: "spark-band",
+    }));
+
+    // historical (grey) segment
+    let dh = "";
+    for (let i = 0; i <= hi; i++) dh += (i ? "L" : "M") + xAt(i) + " " + yAt(s[i]) + " ";
+    svg.appendChild(el("path", { d: dh.trim(), class: "spark-line spark-line--hist", fill: "none" }));
+
+    // recent (coloured) segment
+    let dc = "";
+    for (let i = hi; i < n; i++) dc += (i === hi ? "M" : "L") + xAt(i) + " " + yAt(s[i]) + " ";
+    svg.appendChild(el("path", { d: dc.trim(), class: "spark-line spark-line--now", fill: "none" }));
+
+    // end dot
+    svg.appendChild(el("circle", { cx: xAt(n - 1), cy: yAt(s[n - 1]), r: 3, class: "spark-dot" }));
+
+    const sparkWrap = html("div", "ind__spark");
+    sparkWrap.appendChild(svg);
+    card.appendChild(sparkWrap);
+
+    const axis = html("div", "ind__axis");
+    axis.appendChild(html("span", null, d.xStart || ""));
+    axis.appendChild(html("span", null, d.xEnd || ""));
+    card.appendChild(axis);
+
+    return card;
+  }
+
+  global.IrlChart = { render, lineChart, columnChart, statTile, sparkCard };
 })(window);

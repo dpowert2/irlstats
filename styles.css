@@ -250,6 +250,103 @@ img { max-width: 100%; }
 .stat__sub { font-size: 13px; color: var(--ink-2); margin-top: 4px; }
 .stat__note { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
+.legend-inline { display: inline-block; margin-top: 8px; font-size: 14px; color: var(--muted); font-weight: 600; }
+.legend-inline__k { font-size: 10px; vertical-align: middle; }
+.legend-inline__k--good { color: #17864f; }
+.legend-inline__k--bad { color: #c8322a; }
+:root[data-theme="dark"] .legend-inline__k--good { color: #34c08e; }
+:root[data-theme="dark"] .legend-inline__k--bad { color: #f26d63; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .legend-inline__k--good { color: #34c08e; }
+  :root:not([data-theme="light"]) .legend-inline__k--bad { color: #f26d63; }
+}
+
+/* ---- Indicator grid (the state of the nation) -------------------- */
+:root {
+  --spark-good:      #17864f;
+  --spark-good-wash: rgba(23, 134, 79, 0.10);
+  --spark-bad:       #c8322a;
+  --spark-bad-wash:  rgba(200, 50, 42, 0.09);
+  --spark-hist:      #b9b8b0;
+  --spark-fill:      rgba(120, 120, 110, 0.10);
+}
+:root[data-theme="dark"] {
+  --spark-good:      #34c08e;
+  --spark-good-wash: rgba(52, 192, 142, 0.14);
+  --spark-bad:       #f26d63;
+  --spark-bad-wash:  rgba(242, 109, 99, 0.13);
+  --spark-hist:      #6a6a63;
+  --spark-fill:      rgba(180, 180, 170, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --spark-good:      #34c08e;
+    --spark-good-wash: rgba(52, 192, 142, 0.14);
+    --spark-bad:       #f26d63;
+    --spark-bad-wash:  rgba(242, 109, 99, 0.13);
+    --spark-hist:      #6a6a63;
+    --spark-fill:      rgba(180, 180, 170, 0.08);
+  }
+}
+
+.ind-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--hair);
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 22px 0 8px;
+}
+@media (max-width: 940px) { .ind-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 680px) { .ind-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.ind {
+  background: var(--surface);
+  padding: 16px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ind__head { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 8px; min-height: 34px; }
+.ind__label { font-size: 15px; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; color: var(--ink); }
+.ind__info {
+  margin-left: auto; border: none; background: none; cursor: help; padding: 0;
+  color: var(--muted); font-size: 13px; line-height: 1; flex: none;
+}
+.ind__info:hover { color: var(--accent); }
+.ind__row { display: flex; align-items: baseline; justify-content: space-between; gap: 4px 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.ind__value { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
+.ind__delta { font-size: 13px; font-weight: 700; white-space: nowrap; }
+@media (max-width: 680px) {
+  .ind__value { font-size: 22px; }
+  .ind__delta { font-size: 12px; }
+  .ind { padding: 14px 13px 11px; }
+}
+.ind__arrow { font-size: 12px; }
+.ind--good .ind__value, .ind--good .ind__delta { color: var(--spark-good); }
+.ind--bad  .ind__value, .ind--bad  .ind__delta { color: var(--spark-bad); }
+.ind--flat .ind__value { color: var(--ink); }
+.ind--flat .ind__delta { color: var(--ink-2); }
+
+.ind__spark { margin-top: auto; }
+.spark-svg { width: 100%; height: 56px; display: block; }
+.spark-area { fill: var(--spark-fill); stroke: none; }
+.spark-line { stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.spark-line--hist { stroke: var(--spark-hist); }
+.ind--good .spark-line--now { stroke: var(--spark-good); }
+.ind--bad  .spark-line--now { stroke: var(--spark-bad); }
+.ind--flat .spark-line--now { stroke: var(--series-1); }
+.ind--good .spark-band { fill: var(--spark-good-wash); }
+.ind--bad  .spark-band { fill: var(--spark-bad-wash); }
+.ind--flat .spark-band { fill: rgba(42,120,214,0.08); }
+.spark-dot { stroke: var(--surface); stroke-width: 2; }
+.ind--good .spark-dot { fill: var(--spark-good); }
+.ind--bad  .spark-dot { fill: var(--spark-bad); }
+.ind--flat .spark-dot { fill: var(--series-1); }
+.ind__axis { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+
 /* ---- Story grid -------------------------------------------------- */
 .story-grid {
   display: grid;

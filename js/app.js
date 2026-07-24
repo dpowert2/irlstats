@@ -25,7 +25,13 @@
 
   if (typeof IRL === "undefined" || typeof IrlChart === "undefined") return;
 
-  /* ---- Headline ticker ------------------------------------------ */
+  /* ---- Indicator sparkline grid --------------------------------- */
+  const indGrid = document.getElementById("indicatorGrid");
+  if (indGrid && IRL.indicators) {
+    IRL.indicators.forEach((d) => indGrid.appendChild(IrlChart.sparkCard(d)));
+  }
+
+  /* ---- Headline ticker (optional) ------------------------------- */
   const ticker = document.getElementById("ticker");
   if (ticker) {
     IRL.headline.forEach((d) => ticker.appendChild(IrlChart.statTile(d)));

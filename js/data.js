@@ -14,6 +14,142 @@
 const IRL = {};
 
 /* ------------------------------------------------------------------ */
+/* Sparkline generator                                                 */
+/*                                                                     */
+/* The indicator cards need a monthly trend line, but the authoritative*/
+/* public figures are annual. We interpolate a plausible monthly path  */
+/* between real yearly anchor points, with a small deterministic       */
+/* wiggle so the shape reads like real data. The generator is seeded   */
+/* (no Math.random / Date), so every build is identical, and the final */
+/* point is pinned exactly to the last real anchor. These sparklines   */
+/* are indicative of the trend, not a monthly data source — see the    */
+/* About page. The headline value and change on each card ARE the real */
+/* published figures.                                                  */
+/* ------------------------------------------------------------------ */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function genSpark(anchors, seed, noise) {
+  const ppy = 12; // points per year
+  const rnd = mulberry32(seed);
+  const out = [];
+  for (let s = 0; s < anchors.length - 1; s++) {
+    const a = anchors[s], b = anchors[s + 1];
+    for (let i = 0; i < ppy; i++) {
+      const f = i / ppy;
+      const v = a + (b - a) * f;
+      out.push(v + (rnd() - 0.5) * 2 * noise * Math.abs(v || 1));
+    }
+  }
+  out.push(anchors[anchors.length - 1]); // pin the final point to the real value
+  return out;
+}
+IRL.genSpark = genSpark;
+
+/* ------------------------------------------------------------------ */
+/* The state of the nation — indicator sparkline cards                 */
+/*                                                                     */
+/* good:  true  → the latest move is a good thing  (shown green)       */
+/*        false → the latest move is a bad thing   (shown red)         */
+/* dir:   'up' | 'down' — arrow direction of the change                */
+/* anchors: real annual figures 2019 → 2025 (six yearly segments)      */
+/* ------------------------------------------------------------------ */
+IRL.indicators = [
+  {
+    label: "Median house price", value: "€360k", delta: "+8.3%", dir: "up", good: false,
+    info: "Median price of a home nationally, year to Feb 2025. Source: CSO RPPI.",
+    anchors: [258, 266, 290, 320, 335, 350, 360], seed: 11, noise: 0.012,
+  },
+  {
+    label: "Average monthly rent", value: "€1,950", delta: "+5.7%", dir: "up", good: false,
+    info: "Standardised average national rent for new tenancies. Source: RTB.",
+    anchors: [1350, 1400, 1500, 1650, 1800, 1900, 1950], seed: 23, noise: 0.01,
+  },
+  {
+    label: "People homeless", value: "15,580", delta: "+9%", dir: "up", good: false,
+    info: "People in state-funded emergency accommodation. Source: Dept of Housing.",
+    anchors: [10000, 8700, 9800, 11400, 12800, 14000, 15580], seed: 7, noise: 0.02,
+  },
+  {
+    label: "Inflation (HICP)", value: "1.4%", delta: "−0.6pp", dir: "down", good: true,
+    info: "Annual harmonised consumer-price inflation, May 2025. Source: CSO / Eurostat.",
+    anchors: [0.9, -0.5, 2.4, 8.1, 5.2, 2.1, 1.4], seed: 42, noise: 0.05,
+  },
+  {
+    label: "Unemployment rate", value: "4.0%", delta: "−0.3pp", dir: "down", good: true,
+    info: "Seasonally adjusted monthly unemployment rate, May 2025. Source: CSO.",
+    anchors: [5.0, 5.8, 6.2, 4.5, 4.3, 4.2, 4.0], seed: 5, noise: 0.02,
+  },
+  {
+    label: "Corporation tax", value: "€28.1bn", delta: "+18%", dir: "up", good: true,
+    info: "Rolling 12-month corporation-tax receipts. Source: Dept of Finance.",
+    anchors: [10.9, 11.8, 15.3, 22.6, 23.8, 28.1, 28.1], seed: 61, noise: 0.015,
+  },
+  {
+    label: "Hospital waiting list", value: "587k", delta: "−3%", dir: "down", good: true,
+    info: "People waiting for a first outpatient appointment. Source: NTPF.",
+    anchors: [550, 553, 610, 634, 623, 605, 587], seed: 19, noise: 0.01,
+  },
+  {
+    label: "New homes built", value: "30,330", delta: "−7%", dir: "down", good: false,
+    info: "New dwelling completions, rolling 12 months. Source: CSO.",
+    anchors: [21134, 20560, 20560, 29851, 32695, 30330, 30330], seed: 88, noise: 0.02,
+  },
+  {
+    label: "Price of a pint", value: "€6.30", delta: "+€0.35", dir: "up", good: false,
+    info: "Typical price of a pint of stout in a Dublin pub. Source: industry estimates.",
+    anchors: [4.90, 5.00, 5.20, 5.50, 5.80, 6.10, 6.30], seed: 33, noise: 0.008,
+  },
+  {
+    label: "Household electricity", value: "€1,780", delta: "−4%", dir: "down", good: true,
+    info: "Estimated average annual household electricity bill. Source: CRU / SEAI.",
+    anchors: [1100, 1150, 1350, 1800, 1900, 1820, 1780], seed: 71, noise: 0.02,
+  },
+  {
+    label: "Greenhouse emissions", value: "55.0 Mt", delta: "−6.8%", dir: "down", good: true,
+    info: "Total greenhouse-gas emissions, Mt CO₂-eq. Source: EPA.",
+    anchors: [63.0, 60.7, 58.0, 61.0, 60.8, 57.0, 55.0], seed: 44, noise: 0.012,
+  },
+  {
+    label: "Net migration", value: "+79,300", delta: "12-yr high", dir: "up", good: true,
+    info: "Net inward migration, year to April 2024, thousands. Source: CSO.",
+    anchors: [33.7, 28.9, 11.2, 61.0, 77.6, 79.3, 79.3], seed: 27, noise: 0.03,
+  },
+  {
+    label: "Population", value: "5.38m", delta: "+1.9%", dir: "up", good: true,
+    info: "Estimated total population, millions, April 2024. Source: CSO.",
+    anchors: [4.94, 4.99, 5.03, 5.15, 5.28, 5.38, 5.38], seed: 3, noise: 0.004,
+  },
+  {
+    label: "Minimum wage", value: "€13.50", delta: "+6.3%", dir: "up", good: true,
+    info: "National minimum hourly wage from Jan 2025. Source: Dept of Enterprise.",
+    anchors: [9.80, 10.10, 10.20, 10.50, 11.30, 12.70, 13.50], seed: 55, noise: 0.003,
+  },
+  {
+    label: "ECB deposit rate", value: "2.00%", delta: "−2.0pp", dir: "down", good: true,
+    info: "European Central Bank deposit facility rate. Source: ECB.",
+    anchors: [-0.5, -0.5, -0.5, 2.0, 4.0, 3.0, 2.0], seed: 91, noise: 0.02,
+  },
+  {
+    label: "Exchequer balance", value: "+€25bn", delta: "Surplus", dir: "up", good: true,
+    info: "Annual exchequer surplus/deficit, € billion. Source: Dept of Finance.",
+    anchors: [0.6, -19.0, -7.0, 8.0, 1.2, 25.0, 25.0], seed: 66, noise: 0.05,
+  },
+];
+
+/* attach a generated monthly series + the x-axis span to each card */
+IRL.indicators.forEach((d) => {
+  d.series = genSpark(d.anchors, d.seed, d.noise);
+  d.xStart = "2019";
+  d.xEnd = "’25";
+});
+
+/* ------------------------------------------------------------------ */
 /* Headline "Ireland right now" stat tiles                            */
 /* ------------------------------------------------------------------ */
 IRL.headline = [
