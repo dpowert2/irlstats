@@ -32,8 +32,8 @@ export const SOURCES = [
     // Monthly Unemployment. Pick the rate for all persons, all ages.
     select: {
       STATISTIC: { match: /unemploy.*rate|rate.*unemploy/i },
-      Sex: { match: /both|all/i },
-      "Age Group": { match: /15\s*-\s*74|all ages|total/i },
+      Sex: { match: /both|all persons|all/i },
+      "Age Group": { match: /all ages|15\s*-\s*74|total|both/i },
     },
     freq: "monthly",
     window: 78,
@@ -45,9 +45,10 @@ export const SOURCES = [
   },
   {
     key: "inflation",
-    matrix: "CPM01",
-    // Consumer Price Index, all items. We compute the annual (YoY) rate from
-    // the index ourselves, so this works from the raw index series.
+    // CPM20 replaced CPM01 in Feb 2026 (ECOICOP Ver. 2). Consumer Price Index
+    // by commodity group; we compute the annual (YoY) rate from the all-items
+    // index ourselves, so this works from the raw index series.
+    matrix: "CPM20",
     select: {
       STATISTIC: { match: /consumer price index|^cpi|all items/i },
       "Commodity Group": { match: /all items|all-items/i },

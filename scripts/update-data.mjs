@@ -163,12 +163,16 @@ async function main() {
     }
   }
 
-  // stamp: use the newest per-series `updated` label, plus a build date passed
-  // in via BUILD_DATE (the workflow sets this) so we never call Date() in a way
-  // that produces noisy diffs on no-op runs.
+  // Only advance the "generated" date when a value actually changed, so a run
+  // where nothing was released produces an identical file — no diff, no commit,
+  // no redeploy. The build date is passed in via BUILD_DATE by the workflow.
+  const seriesChanged =
+    JSON.stringify(series) !== JSON.stringify(prev.series || {});
   const buildDate = process.env.BUILD_DATE || prev.generated || "";
+  const generated = seriesChanged ? buildDate : prev.generated || buildDate;
+  if (!seriesChanged) log("\nNo series changed — keeping generated date " + generated);
   const out = {
-    generated: buildDate,
+    generated,
     note: "Auto-updated from official sources; series absent here use curated values in js/data.js.",
     series,
   };

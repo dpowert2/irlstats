@@ -8,6 +8,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch: {}
+  # Redeploy after the scheduled data refresh. Its commit is made with the
+  # GITHUB_TOKEN, which by design does NOT fire `push`, so we trigger off the
+  # update workflow completing instead.
+  workflow_run:
+    workflows: ["Update data"]
+    types: [completed]
 
 permissions:
   contents: read

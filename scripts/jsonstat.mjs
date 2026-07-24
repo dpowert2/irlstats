@@ -58,9 +58,22 @@ export function readSeries(ds, select = {}) {
     if (dimId === timeId) return;
     const cats = categories(ds, dimId);
     if (sizes[di] === 1) { fixed[dimId] = cats[0].index; return; }
-    const sel = select[dimId];
+    // A selection may be keyed by the raw dimension id (e.g. "C02076V03371")
+    // OR by its human label (e.g. "Age Group"). Real CSO datasets id their
+    // dimensions by opaque codes, so match on the label too, case-insensitively.
+    const dimLabel = (ds.dimension[dimId] && ds.dimension[dimId].label) || dimId;
+    let sel = select[dimId];
+    if (sel == null) sel = select[dimLabel];
     if (sel == null) {
-      throw new Error(`dimension "${dimId}" (size ${sizes[di]}) needs a selection`);
+      const k = Object.keys(select).find(
+        (key) => key.toLowerCase() === String(dimLabel).toLowerCase()
+      );
+      if (k) sel = select[k];
+    }
+    if (sel == null) {
+      throw new Error(
+        `dimension "${dimId}" ("${dimLabel}", size ${sizes[di]}) needs a selection`
+      );
     }
     let hit;
     if (typeof sel === "object" && sel.match instanceof RegExp) {
