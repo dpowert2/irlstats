@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-07",
+  "generated": "2026-08-14",
   "note": "Auto-updated from official sources; series absent here use curated values in js/data.js.",
   "series": {
     "unemployment": {
@@ -92,11 +92,10 @@
     },
     "inflation": {
       "value": "3.4%",
-      "delta": "−0.2pp",
+      "delta": "−0.1pp",
       "dir": "down",
       "good": true,
       "values": [
-        1.2829,
         1.1394,
         0.7314,
         0,
@@ -173,9 +172,10 @@
         3.6732,
         3.7664,
         3.6572,
-        3.4221
+        3.4221,
+        3.3623
       ],
-      "updated": "2026 June",
+      "updated": "2026 July",
       "source": "CSO Consumer Price Index (CPM01), YoY"
     }
   }
