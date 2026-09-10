@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-02",
+  "generated": "2026-09-10",
   "note": "Auto-updated from official sources; series absent here use curated values in js/data.js.",
   "series": {
     "unemployment": {
@@ -91,12 +91,11 @@
       "source": "CSO Monthly Unemployment (MUM01)"
     },
     "inflation": {
-      "value": "3.4%",
-      "delta": "−0.1pp",
-      "dir": "down",
-      "good": true,
+      "value": "3.6%",
+      "delta": "+0.3pp",
+      "dir": "up",
+      "good": false,
       "values": [
-        1.1394,
         0.7314,
         0,
         -0.4642,
@@ -173,9 +172,10 @@
         3.7664,
         3.6572,
         3.4221,
-        3.3623
+        3.3623,
+        3.6216
       ],
-      "updated": "2026 July",
+      "updated": "2026 August",
       "source": "CSO Consumer Price Index (CPM01), YoY"
     }
   }
